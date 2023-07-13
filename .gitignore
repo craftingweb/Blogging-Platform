@@ -1,0 +1,7 @@
+node_modules
+.env
+
+# migration is to create a table, and seed is to fill that table with data like username, passwords and model is representation of migration
+# npx sequelize-cli model:generate --name User --attributes name:string,email:string
+# it will create model (table) with data inside in models folder with name given as well it creates migrations with data types and with line of code npx sequelize-cli db:migrate it will add this row of columns in my sql data base
+# npx sequelize-cli model:generate --name Comment --attributes content:string
