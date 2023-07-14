@@ -33,7 +33,7 @@ app.get("/", (req, res) => {
 });
 
 // Get all the posts
-app.get("/posts", async (req, res) => {
+app.get("/posts", authenticateUser, async (req, res) => {
   try {
     const allPosts = await Post.findAll();
 
@@ -45,7 +45,7 @@ app.get("/posts", async (req, res) => {
 });
 
 // Create a new Post
-app.post("/posts", async (req, res) => {
+app.post("/posts", authenticateUser, async (req, res) => {
   try {
     const newPost = await Post.create(req.body);
 
@@ -60,7 +60,7 @@ app.post("/posts", async (req, res) => {
 });
 
 // Get a specific Post
-app.get("/posts/:id", async (req, res) => {
+app.get("/posts/:id", authenticateUser, async (req, res) => {
   const blogId = parseInt(req.params.id, 10);
 
   try {
@@ -78,10 +78,17 @@ app.get("/posts/:id", async (req, res) => {
 });
 
 // Update a specific Post
-app.patch("/posts/:id", async (req, res) => {
+app.patch("/posts/:id", authenticateUser, async (req, res) => {
   const blogId = parseInt(req.params.id, 10);
 
   try {
+    const record = await Post.findOne({ where: { id: blogId } });
+    if (record && record.UserId !== parseInt(req.session.userId, 10)) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to perform that action." });
+    }
+
     const [numberOfAffectedRows, affectedRows] = await Post.update(req.body, {
       where: { id: blogId },
       returning: true,
@@ -102,10 +109,17 @@ app.patch("/posts/:id", async (req, res) => {
 });
 
 // Delete a specific Post
-app.delete("/posts/:id", async (req, res) => {
+app.delete("/posts/:id", authenticateUser, async (req, res) => {
   const blogId = parseInt(req.params.id, 10);
 
   try {
+    const record = await Post.findOne({ where: { id: blogId } });
+    if (record && record.UserId !== parseInt(req.session.userId, 10)) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to perform that action." });
+    }
+
     const deleteOp = await Post.destroy({ where: { id: blogId } });
 
     if (deleteOp > 0) {
@@ -121,7 +135,7 @@ app.delete("/posts/:id", async (req, res) => {
 
 //////////////////////////// comments routes
 // Get all the posts
-app.post("/comments", async (req, res) => {
+app.post("/comments", authenticateUser, async (req, res) => {
   try {
     const newComment = await Comment.create(req.body);
 
@@ -136,7 +150,7 @@ app.post("/comments", async (req, res) => {
 });
 
 // Get all comments
-app.get("/comments", async (req, res) => {
+app.get("/comments", authenticateUser, async (req, res) => {
   try {
     const allcomments = await Comment.findAll();
 
@@ -151,7 +165,7 @@ app.get("/comments", async (req, res) => {
 });
 
 // Get a specific comment
-app.get("/comments/:id", async (req, res) => {
+app.get("/comments/:id", authenticateUser, async (req, res) => {
   const commentId = parseInt(req.params.id, 10);
 
   try {
@@ -172,10 +186,17 @@ app.get("/comments/:id", async (req, res) => {
 });
 
 // Update a specific recipe
-app.patch("/comments/:id", async (req, res) => {
+app.patch("/comments/:id", authenticateUser, async (req, res) => {
   const commentId = parseInt(req.params.id, 10);
 
   try {
+    const record = await Comment.findOne({ where: { id: commentId } });
+    if (record && record.UserId !== parseInt(req.session.userId, 10)) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to perform that action." });
+    }
+
     const [numberOfAffectedRows, affectedRows] = await Comment.update(
       req.body,
       { where: { id: commentId }, returning: true }
@@ -196,10 +217,17 @@ app.patch("/comments/:id", async (req, res) => {
 });
 
 // Delete a specific recipe
-app.delete("/comments/:id", async (req, res) => {
+app.delete("/comments/:id", authenticateUser, async (req, res) => {
   const commentId = parseInt(req.params.id, 10);
 
   try {
+    const record = await Comment.findOne({ where: { id: commentId } });
+    if (record && record.UserId !== parseInt(req.session.userId, 10)) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to perform that action." });
+    }
+
     const deleteOp = await Comment.destroy({ where: { id: commentId } });
 
     if (deleteOp > 0) {
