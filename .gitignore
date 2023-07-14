@@ -5,3 +5,16 @@ node_modules
 # npx sequelize-cli model:generate --name User --attributes name:string,email:string
 # it will create model (table) with data inside in models folder with name given as well it creates migrations with data types and with line of code npx sequelize-cli db:migrate it will add this row of columns in my sql data base
 # npx sequelize-cli model:generate --name Comment --attributes content:string
+
+# create a seed file: npx sequelize-cli seed:generate --name blog ,, name is does not matter it will be 2023XX-blog.js    then go inside that seed and feel with data that we want to populate our tabel but do not forget to write down section like user null
+# undo original seed : npx sequelize-cli db:seed:undo      and then fill it with npx sequelize-cli db:seed:all
+
+
+# we can undo both migration and seeds and both move forward
+
+#in models folder we create model.js and this is structure of table with data type and then we press migrate and will show up in migration
+
+#create foreign key
+#npx sequelize-cli migration:generate --name add-user-id-to-post 
+
+
